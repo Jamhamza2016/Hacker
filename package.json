@@ -1,0 +1,29 @@
+{
+  "name": "cybersec-tools-website",
+  "version": "1.0.0",
+  "description": "Professional Hacking Tools Website with Admin Panel",
+  "main": "index.html",
+  "scripts": {
+    "dev": "vercel dev",
+    "start": "serve .",
+    "deploy": "vercel --prod"
+  },
+  "dependencies": {
+    "serve": "^14.2.0"
+  },
+  "devDependencies": {
+    "vercel": "^28.19.0"
+  },
+  "engines": {
+    "node": ">=16.0.0"
+  },
+  "author": "CyberSec Tools",
+  "license": "MIT",
+  "keywords": [
+    "hacking",
+    "security",
+    "tools",
+    "cybersecurity",
+    "admin-panel"
+  ]
+}
