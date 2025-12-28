@@ -1,0 +1,1001 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CYBERSEC TOOLS | Professional Hacking Toolkit</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+    <style>
+        :root {
+            --hacker-green: #00ff00;
+            --hacker-blue: #0088ff;
+            --dark-bg: #0a0a0a;
+            --card-bg: #111111;
+            --text-light: #e0e0e0;
+            --danger-red: #ff0033;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Courier New', monospace;
+        }
+        
+        body {
+            background-color: var(--dark-bg);
+            color: var(--text-light);
+            min-height: 100vh;
+            overflow-x: hidden;
+            background-image: 
+                radial-gradient(circle at 10% 20%, rgba(0, 100, 0, 0.05) 0%, transparent 20%),
+                radial-gradient(circle at 90% 80%, rgba(0, 100, 255, 0.05) 0%, transparent 20%);
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        /* Header Styles */
+        header {
+            background-color: rgba(10, 10, 10, 0.95);
+            border-bottom: 1px solid var(--hacker-green);
+            padding: 15px 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            backdrop-filter: blur(10px);
+        }
+        
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .logo-icon {
+            color: var(--hacker-green);
+            font-size: 24px;
+        }
+        
+        .logo-text {
+            font-size: 24px;
+            font-weight: bold;
+            background: linear-gradient(to right, var(--hacker-green), var(--hacker-blue));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: 1px;
+        }
+        
+        .logo-subtitle {
+            font-size: 10px;
+            color: var(--hacker-blue);
+            letter-spacing: 2px;
+        }
+        
+        nav ul {
+            display: flex;
+            list-style: none;
+            gap: 25px;
+        }
+        
+        nav a {
+            color: var(--text-light);
+            text-decoration: none;
+            font-size: 16px;
+            transition: all 0.3s;
+            padding: 5px 0;
+            position: relative;
+        }
+        
+        nav a:hover {
+            color: var(--hacker-green);
+        }
+        
+        nav a.active {
+            color: var(--hacker-green);
+        }
+        
+        nav a.active::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background-color: var(--hacker-green);
+        }
+        
+        .user-actions {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .login-btn {
+            background-color: transparent;
+            color: var(--hacker-blue);
+            border: 1px solid var(--hacker-blue);
+            padding: 8px 15px;
+            border-radius: 3px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.3s;
+        }
+        
+        .login-btn:hover {
+            background-color: rgba(0, 136, 255, 0.1);
+        }
+        
+        .admin-link {
+            color: var(--danger-red);
+            font-size: 12px;
+            text-decoration: none;
+            border: 1px solid var(--danger-red);
+            padding: 5px 10px;
+            border-radius: 3px;
+            transition: all 0.3s;
+        }
+        
+        .admin-link:hover {
+            background-color: rgba(255, 0, 51, 0.1);
+        }
+        
+        /* Main Content */
+        main {
+            padding: 40px 0;
+            min-height: calc(100vh - 180px);
+        }
+        
+        .hero {
+            text-align: center;
+            padding: 40px 0;
+            margin-bottom: 40px;
+            border-bottom: 1px solid rgba(0, 255, 0, 0.2);
+        }
+        
+        .hero h1 {
+            font-size: 36px;
+            margin-bottom: 15px;
+            color: var(--hacker-green);
+        }
+        
+        .hero p {
+            font-size: 18px;
+            color: #aaa;
+            max-width: 800px;
+            margin: 0 auto 30px;
+            line-height: 1.6;
+        }
+        
+        .terminal-text {
+            color: var(--hacker-green);
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            white-space: nowrap;
+            overflow: hidden;
+            border-right: 2px solid var(--hacker-green);
+            animation: typing 3.5s steps(40, end), blink-caret 0.75s step-end infinite;
+            display: inline-block;
+            margin-bottom: 20px;
+            text-align: left;
+            max-width: 600px;
+        }
+        
+        @keyframes typing {
+            from { width: 0 }
+            to { width: 100% }
+        }
+        
+        @keyframes blink-caret {
+            from, to { border-color: transparent }
+            50% { border-color: var(--hacker-green) }
+        }
+        
+        /* Tools Grid */
+        .section-title {
+            font-size: 28px;
+            margin-bottom: 30px;
+            color: var(--hacker-green);
+            border-left: 4px solid var(--hacker-green);
+            padding-left: 15px;
+        }
+        
+        .tools-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 25px;
+            margin-bottom: 50px;
+        }
+        
+        .tool-card {
+            background-color: rgba(17, 17, 17, 0.9);
+            border: 1px solid rgba(0, 255, 0, 0.2);
+            border-radius: 5px;
+            padding: 25px;
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .tool-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--hacker-green);
+            box-shadow: 0 5px 15px rgba(0, 255, 0, 0.1);
+        }
+        
+        .tool-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: linear-gradient(to right, var(--hacker-green), var(--hacker-blue));
+        }
+        
+        .tool-icon {
+            font-size: 30px;
+            color: var(--hacker-green);
+            margin-bottom: 15px;
+        }
+        
+        .tool-name {
+            font-size: 20px;
+            margin-bottom: 10px;
+            color: var(--text-light);
+        }
+        
+        .tool-category {
+            display: inline-block;
+            background-color: rgba(0, 136, 255, 0.2);
+            color: var(--hacker-blue);
+            padding: 3px 8px;
+            border-radius: 3px;
+            font-size: 12px;
+            margin-bottom: 15px;
+        }
+        
+        .tool-desc {
+            color: #aaa;
+            font-size: 14px;
+            line-height: 1.5;
+            margin-bottom: 20px;
+        }
+        
+        .tool-btn {
+            background-color: transparent;
+            color: var(--hacker-green);
+            border: 1px solid var(--hacker-green);
+            padding: 8px 15px;
+            border-radius: 3px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.3s;
+            display: inline-block;
+            text-decoration: none;
+        }
+        
+        .tool-btn:hover {
+            background-color: rgba(0, 255, 0, 0.1);
+        }
+        
+        /* Login Modal */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+        
+        .login-modal {
+            background-color: rgba(20, 20, 20, 0.95);
+            border: 1px solid var(--hacker-green);
+            border-radius: 5px;
+            width: 100%;
+            max-width: 400px;
+            padding: 30px;
+        }
+        
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+        
+        .modal-title {
+            color: var(--hacker-green);
+            font-size: 24px;
+        }
+        
+        .close-modal {
+            background-color: transparent;
+            color: var(--text-light);
+            border: none;
+            font-size: 20px;
+            cursor: pointer;
+        }
+        
+        .close-modal:hover {
+            color: var(--danger-red);
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            color: var(--text-light);
+        }
+        
+        .form-input {
+            width: 100%;
+            padding: 12px 15px;
+            background-color: rgba(30, 30, 30, 0.8);
+            border: 1px solid rgba(0, 255, 0, 0.3);
+            border-radius: 3px;
+            color: var(--text-light);
+            font-size: 16px;
+        }
+        
+        .form-input:focus {
+            outline: none;
+            border-color: var(--hacker-green);
+        }
+        
+        .btn-primary {
+            background-color: var(--hacker-green);
+            color: var(--dark-bg);
+            border: none;
+            padding: 12px 25px;
+            border-radius: 3px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            transition: all 0.3s;
+            width: 100%;
+        }
+        
+        .btn-primary:hover {
+            background-color: #00cc00;
+        }
+        
+        .auth-toggle {
+            text-align: center;
+            margin-top: 20px;
+            color: #aaa;
+            font-size: 14px;
+        }
+        
+        .auth-toggle a {
+            color: var(--hacker-blue);
+            cursor: pointer;
+        }
+        
+        .error-message {
+            background-color: rgba(255, 0, 51, 0.1);
+            border: 1px solid var(--danger-red);
+            color: var(--danger-red);
+            padding: 10px;
+            border-radius: 3px;
+            margin-bottom: 20px;
+            font-size: 14px;
+            display: none;
+        }
+        
+        /* Footer */
+        footer {
+            background-color: rgba(10, 10, 10, 0.95);
+            border-top: 1px solid rgba(0, 255, 0, 0.2);
+            padding: 20px 0;
+            text-align: center;
+        }
+        
+        .footer-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .copyright {
+            text-align: left;
+            font-size: 14px;
+            color: #888;
+        }
+        
+        .disclaimer {
+            text-align: right;
+            max-width: 400px;
+            font-size: 12px;
+            color: #666;
+            line-height: 1.5;
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            nav ul {
+                gap: 15px;
+            }
+            
+            .tools-grid {
+                grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            }
+            
+            .hero h1 {
+                font-size: 28px;
+            }
+            
+            .footer-content {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .copyright, .disclaimer {
+                text-align: center;
+            }
+        }
+        
+        /* Matrix Effect */
+        .matrix-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            opacity: 0.03;
+            pointer-events: none;
+        }
+    </style>
+</head>
+<body>
+    <!-- Matrix Background -->
+    <canvas class="matrix-bg" id="matrixCanvas"></canvas>
+    
+    <!-- Header -->
+    <header>
+        <div class="container header-content">
+            <div class="logo">
+                <div class="logo-icon"><i class="fas fa-terminal"></i></div>
+                <div>
+                    <div class="logo-text">CYBERSEC TOOLS</div>
+                    <div class="logo-subtitle">PROFESSIONAL TOOLKIT v3.0</div>
+                </div>
+            </div>
+            
+            <nav>
+                <ul>
+                    <li><a href="#" class="active" data-category="all">ALL TOOLS</a></li>
+                    <li><a href="#" data-category="data">DATA</a></li>
+                    <li><a href="#" data-category="tools">TOOLS</a></li>
+                    <li><a href="#" data-category="games">GAMES</a></li>
+                    <li><a href="#" data-category="hacks">HACKS</a></li>
+                </ul>
+            </nav>
+            
+            <div class="user-actions">
+                <button class="login-btn" id="userLoginBtn">
+                    <i class="fas fa-user"></i> USER LOGIN
+                </button>
+                <a href="admin.html" class="admin-link">
+                    <i class="fas fa-user-secret"></i> ADMIN
+                </a>
+            </div>
+        </div>
+    </header>
+    
+    <!-- Main Content -->
+    <main class="container">
+        <div class="hero">
+            <h1>PROFESSIONAL SECURITY TOOLKIT</h1>
+            <p>Advanced cybersecurity tools for penetration testing, data analysis, and security research. All tools are for educational and authorized testing purposes only.</p>
+            <div class="terminal-text" id="terminalOutput">
+                > Initializing secure connection... Connected to CYBERSEC_TOOLS v3.0
+                > Loading tools database... Ready.
+                > System time: <span id="currentTime"></span>
+                > Status: <span style="color: #0F0;">ALL SYSTEMS OPERATIONAL</span>
+            </div>
+        </div>
+        
+        <h2 class="section-title" id="sectionTitle">ALL SECURITY TOOLS</h2>
+        
+        <div class="tools-grid" id="toolsContainer">
+            <!-- Tools will be loaded from Firebase -->
+        </div>
+    </main>
+    
+    <!-- Footer -->
+    <footer>
+        <div class="container footer-content">
+            <div class="copyright">
+                <div>CYBERSEC TOOLS &copy; 2023 | SECURE ACCESS ONLY</div>
+                <div style="font-size: 11px; margin-top: 5px;">FOR AUTHORIZED EDUCATIONAL USE</div>
+            </div>
+            <div class="disclaimer">
+                This platform is for educational purposes only. Unauthorized access to computer systems is illegal. Always obtain proper authorization before testing.
+            </div>
+        </div>
+    </footer>
+    
+    <!-- Login Modal -->
+    <div class="modal-overlay" id="loginModal">
+        <div class="login-modal">
+            <div class="modal-header">
+                <h2 class="modal-title" id="modalTitle">USER LOGIN</h2>
+                <button class="close-modal" id="closeModal">&times;</button>
+            </div>
+            
+            <div class="error-message" id="loginError">Invalid credentials. Please try again.</div>
+            
+            <form id="loginForm">
+                <div class="form-group">
+                    <label class="form-label" for="email">Email</label>
+                    <input type="email" class="form-input" id="email" placeholder="user@example.com" required>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label" for="password">Password</label>
+                    <input type="password" class="form-input" id="password" placeholder="••••••••" required>
+                </div>
+                
+                <button type="submit" class="btn-primary">ACCESS TOOLS</button>
+            </form>
+            
+            <form id="registerForm" style="display: none;">
+                <div class="form-group">
+                    <label class="form-label" for="regEmail">Email</label>
+                    <input type="email" class="form-input" id="regEmail" placeholder="user@example.com" required>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label" for="regPassword">Password</label>
+                    <input type="password" class="form-input" id="regPassword" placeholder="••••••••" required>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label" for="regConfirmPassword">Confirm Password</label>
+                    <input type="password" class="form-input" id="regConfirmPassword" placeholder="••••••••" required>
+                </div>
+                
+                <button type="submit" class="btn-primary">CREATE ACCOUNT</button>
+            </form>
+            
+            <div class="auth-toggle">
+                <span id="authToggleText">Need an account? <a id="authToggleLink">Register</a></span>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // Firebase Configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyBk9_vqT7Q3qG3q3q3q3q3q3q3q3q3q3q3q3",
+            authDomain: "cybersec-tools.firebaseapp.com",
+            databaseURL: "https://cybersec-tools-default-rtdb.firebaseio.com",
+            projectId: "cybersec-tools",
+            storageBucket: "cybersec-tools.appspot.com",
+            messagingSenderId: "123456789012",
+            appId: "1:123456789012:web:3q3q3q3q3q3q3q3q3q3q3"
+        };
+
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        const database = firebase.database();
+        const auth = firebase.auth();
+
+        // DOM Elements
+        const toolsContainer = document.getElementById('toolsContainer');
+        const loginModal = document.getElementById('loginModal');
+        const userLoginBtn = document.getElementById('userLoginBtn');
+        const closeModal = document.getElementById('closeModal');
+        const loginForm = document.getElementById('loginForm');
+        const registerForm = document.getElementById('registerForm');
+        const authToggleLink = document.getElementById('authToggleLink');
+        const authToggleText = document.getElementById('authToggleText');
+        const loginError = document.getElementById('loginError');
+        const modalTitle = document.getElementById('modalTitle');
+        const navLinks = document.querySelectorAll('nav a');
+        const sectionTitle = document.getElementById('sectionTitle');
+        const terminalOutput = document.getElementById('terminalOutput');
+        const currentTimeSpan = document.getElementById('currentTime');
+
+        // Current user and category
+        let currentUser = null;
+        let currentCategory = 'all';
+
+        // Matrix Background Effect
+        const canvas = document.getElementById('matrixCanvas');
+        const ctx = canvas.getContext('2d');
+        
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+        
+        const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789$+-*/=%\"'#&_(),.;:?!\\|{}<>[]^~";
+        const charArray = chars.split("");
+        const fontSize = 14;
+        const columns = canvas.width / fontSize;
+        const drops = Array(Math.floor(columns)).fill(1);
+        
+        function drawMatrix() {
+            ctx.fillStyle = "rgba(10, 10, 10, 0.05)";
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            
+            ctx.fillStyle = "#0F0";
+            ctx.font = `${fontSize}px monospace`;
+            
+            for (let i = 0; i < drops.length; i++) {
+                const text = charArray[Math.floor(Math.random() * charArray.length)];
+                ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+                
+                if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
+                    drops[i] = 0;
+                }
+                drops[i]++;
+            }
+        }
+        
+        setInterval(drawMatrix, 35);
+        
+        window.addEventListener('resize', () => {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        });
+
+        // Update terminal time
+        function updateTime() {
+            const now = new Date();
+            const timeString = now.toLocaleTimeString();
+            currentTimeSpan.textContent = timeString;
+            
+            // Add random status messages
+            if (Math.random() > 0.95) {
+                const messages = [
+                    "> Scanning network... No threats detected.",
+                    "> Security protocols: ACTIVE",
+                    "> Firewall status: ENABLED",
+                    "> Encryption: AES-256 ACTIVE",
+                    "> Monitoring 12 connected devices"
+                ];
+                const randomMsg = messages[Math.floor(Math.random() * messages.length)];
+                terminalOutput.innerHTML += `<br>${randomMsg}`;
+                
+                // Keep only last 5 lines
+                const lines = terminalOutput.innerHTML.split('<br>');
+                if (lines.length > 5) {
+                    terminalOutput.innerHTML = lines.slice(-5).join('<br>');
+                }
+            }
+        }
+        
+        setInterval(updateTime, 1000);
+        updateTime();
+
+        // Load tools from Firebase
+        function loadTools(category = 'all') {
+            toolsContainer.innerHTML = '<div class="terminal-text">> Loading tools... Please wait.</div>';
+            
+            if (category === 'all') {
+                database.ref('tools').once('value')
+                    .then((snapshot) => {
+                        toolsContainer.innerHTML = '';
+                        if (snapshot.exists()) {
+                            const tools = snapshot.val();
+                            Object.keys(tools).forEach((key) => {
+                                createToolCard(tools[key], key);
+                            });
+                        } else {
+                            toolsContainer.innerHTML = '<div class="terminal-text">> No tools available. Check back soon.</div>';
+                        }
+                    })
+                    .catch((error) => {
+                        console.error("Error loading tools:", error);
+                        toolsContainer.innerHTML = '<div class="terminal-text">> ERROR: Connection failed.</div>';
+                    });
+            } else {
+                database.ref('tools').orderByChild('category').equalTo(category).once('value')
+                    .then((snapshot) => {
+                        toolsContainer.innerHTML = '';
+                        if (snapshot.exists()) {
+                            const tools = snapshot.val();
+                            Object.keys(tools).forEach((key) => {
+                                createToolCard(tools[key], key);
+                            });
+                        } else {
+                            toolsContainer.innerHTML = `<div class="terminal-text">> No ${category} tools found.</div>`;
+                        }
+                    })
+                    .catch((error) => {
+                        console.error("Error loading tools:", error);
+                        toolsContainer.innerHTML = '<div class="terminal-text">> ERROR: Connection failed.</div>';
+                    });
+            }
+        }
+
+        // Create tool card
+        function createToolCard(tool, key) {
+            const toolCard = document.createElement('div');
+            toolCard.className = 'tool-card';
+            
+            toolCard.innerHTML = `
+                <div class="tool-icon"><i class="${tool.icon}"></i></div>
+                <h3 class="tool-name">${tool.name}</h3>
+                <span class="tool-category">${tool.category.toUpperCase()}</span>
+                <p class="tool-desc">${tool.description}</p>
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <span style="color: #0F0; font-size: 12px;">
+                        <i class="fas fa-circle" style="font-size: 8px;"></i> ONLINE
+                    </span>
+                    <a href="#" class="tool-btn" data-id="${key}">LAUNCH TOOL</a>
+                </div>
+            `;
+            
+            toolsContainer.appendChild(toolCard);
+            
+            // Add launch button event
+            toolCard.querySelector('.tool-btn').addEventListener('click', (e) => {
+                e.preventDefault();
+                if (currentUser) {
+                    launchTool(tool.name);
+                } else {
+                    loginModal.style.display = 'flex';
+                }
+            });
+        }
+
+        // Launch tool (simulated)
+        function launchTool(toolName) {
+            const messages = [
+                `> Initializing ${toolName}...`,
+                `> Loading modules...`,
+                `> Establishing secure connection...`,
+                `> ${toolName} is now ready for use.`
+            ];
+            
+            let currentLine = 0;
+            const interval = setInterval(() => {
+                if (currentLine < messages.length) {
+                    terminalOutput.innerHTML += `<br>${messages[currentLine]}`;
+                    currentLine++;
+                    
+                    // Keep only last 5 lines
+                    const lines = terminalOutput.innerHTML.split('<br>');
+                    if (lines.length > 5) {
+                        terminalOutput.innerHTML = lines.slice(-5).join('<br>');
+                    }
+                } else {
+                    clearInterval(interval);
+                }
+            }, 800);
+        }
+
+        // Authentication
+        auth.onAuthStateChanged((user) => {
+            if (user) {
+                currentUser = user;
+                userLoginBtn.innerHTML = `<i class="fas fa-user-check"></i> ${user.email}`;
+                userLoginBtn.style.color = '#0F0';
+                userLoginBtn.style.borderColor = '#0F0';
+                console.log("User logged in:", user.email);
+            } else {
+                currentUser = null;
+                userLoginBtn.innerHTML = `<i class="fas fa-user"></i> USER LOGIN`;
+                userLoginBtn.style.color = '';
+                userLoginBtn.style.borderColor = '';
+            }
+        });
+
+        // Login form
+        loginForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            
+            auth.signInWithEmailAndPassword(email, password)
+                .then(() => {
+                    loginError.style.display = 'none';
+                    loginModal.style.display = 'none';
+                    loginForm.reset();
+                    terminalOutput.innerHTML += `<br>> User authentication successful. Welcome, ${email.split('@')[0]}.`;
+                })
+                .catch((error) => {
+                    loginError.textContent = error.message;
+                    loginError.style.display = 'block';
+                });
+        });
+
+        // Register form
+        registerForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const email = document.getElementById('regEmail').value;
+            const password = document.getElementById('regPassword').value;
+            const confirmPassword = document.getElementById('regConfirmPassword').value;
+            
+            if (password !== confirmPassword) {
+                loginError.textContent = "Passwords don't match";
+                loginError.style.display = 'block';
+                return;
+            }
+            
+            auth.createUserWithEmailAndPassword(email, password)
+                .then(() => {
+                    loginError.style.display = 'none';
+                    loginModal.style.display = 'none';
+                    registerForm.reset();
+                    terminalOutput.innerHTML += `<br>> User account created successfully.`;
+                })
+                .catch((error) => {
+                    loginError.textContent = error.message;
+                    loginError.style.display = 'block';
+                });
+        });
+
+        // Toggle login/register forms
+        authToggleLink.addEventListener('click', () => {
+            if (loginForm.style.display !== 'none') {
+                loginForm.style.display = 'none';
+                registerForm.style.display = 'block';
+                modalTitle.textContent = 'USER REGISTRATION';
+                authToggleText.innerHTML = 'Already have an account? <a id="authToggleLink">Login</a>';
+            } else {
+                loginForm.style.display = 'block';
+                registerForm.style.display = 'none';
+                modalTitle.textContent = 'USER LOGIN';
+                authToggleText.innerHTML = 'Need an account? <a id="authToggleLink">Register</a>';
+            }
+            
+            // Re-attach event listener
+            document.getElementById('authToggleLink').addEventListener('click', arguments.callee);
+        });
+
+        // Modal controls
+        userLoginBtn.addEventListener('click', () => {
+            if (currentUser) {
+                // User is logged in - show logout option
+                if (confirm("Do you want to logout?")) {
+                    auth.signOut();
+                }
+            } else {
+                loginModal.style.display = 'flex';
+                loginForm.style.display = 'block';
+                registerForm.style.display = 'none';
+                modalTitle.textContent = 'USER LOGIN';
+                authToggleText.innerHTML = 'Need an account? <a id="authToggleLink">Register</a>';
+                loginError.style.display = 'none';
+            }
+        });
+
+        closeModal.addEventListener('click', () => {
+            loginModal.style.display = 'none';
+        });
+
+        loginModal.addEventListener('click', (e) => {
+            if (e.target === loginModal) {
+                loginModal.style.display = 'none';
+            }
+        });
+
+        // Navigation
+        navLinks.forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                
+                // Update active link
+                navLinks.forEach(l => l.classList.remove('active'));
+                link.classList.add('active');
+                
+                // Update category and load tools
+                currentCategory = link.getAttribute('data-category');
+                
+                // Update section title
+                const categoryTitles = {
+                    'all': 'ALL SECURITY TOOLS',
+                    'data': 'DATA ANALYSIS TOOLS',
+                    'tools': 'SECURITY TOOLS',
+                    'games': 'SECURITY GAMES & CTFs',
+                    'hacks': 'HACKING TOOLS'
+                };
+                
+                sectionTitle.textContent = categoryTitles[currentCategory] || 'SECURITY TOOLS';
+                loadTools(currentCategory);
+            });
+        });
+
+        // Load sample data if empty
+        function initializeSampleData() {
+            database.ref('tools').once('value')
+                .then((snapshot) => {
+                    if (!snapshot.exists()) {
+                        const sampleTools = [
+                            {
+                                name: "Network Scanner Pro",
+                                category: "tools",
+                                description: "Advanced network reconnaissance tool with port scanning and service detection",
+                                icon: "fas fa-network-wired"
+                            },
+                            {
+                                name: "Data Analyzer X",
+                                category: "data",
+                                description: "Big data analysis tool with machine learning capabilities",
+                                icon: "fas fa-chart-line"
+                            },
+                            {
+                                name: "Encryption Suite",
+                                category: "tools",
+                                description: "Military-grade encryption and decryption tools",
+                                icon: "fas fa-lock"
+                            },
+                            {
+                                name: "CTF Challenge Platform",
+                                category: "games",
+                                description: "Interactive Capture The Flag challenges for training",
+                                icon: "fas fa-flag-checkered"
+                            },
+                            {
+                                name: "Vulnerability Scanner",
+                                category: "hacks",
+                                description: "Automated vulnerability detection across networks",
+                                icon: "fas fa-shield-alt"
+                            },
+                            {
+                                name: "SQL Injection Tool",
+                                category: "hacks",
+                                description: "Safe SQL injection testing and demonstration tool",
+                                icon: "fas fa-database"
+                            },
+                            {
+                                name: "Password Auditor",
+                                category: "tools",
+                                description: "Password strength testing and auditing tool",
+                                icon: "fas fa-key"
+                            },
+                            {
+                                name: "Packet Analyzer",
+                                category: "data",
+                                description: "Deep packet inspection and network traffic analysis",
+                                icon: "fas fa-stream"
+                            }
+                        ];
+                        
+                        sampleTools.forEach((tool, index) => {
+                            database.ref('tools').push(tool);
+                        });
+                        
+                        console.log("Sample tools added to database");
+                    }
+                });
+        }
+
+        // Initialize
+        window.addEventListener('DOMContentLoaded', () => {
+            loadTools(currentCategory);
+            initializeSampleData();
+        });
+    </script>
+</body>
+</html>
